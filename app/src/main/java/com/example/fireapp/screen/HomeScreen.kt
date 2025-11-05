@@ -17,30 +17,38 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.fireapp.R
 import com.example.fireapp.components.Layout
 import com.example.fireapp.components.VideoStreamPlayer
 import com.example.fireapp.data.UiEvent
 import com.example.fireapp.ui.theme.Purple40
 import com.example.fireapp.viewModel.MainViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Preview
 @Composable
 fun HomeSreen(
-    mainViewModel: MainViewModel = MainViewModel()
+    mainViewModel: MainViewModel = viewModel()
 ) {
     val dialogState by mainViewModel.dialogState.collectAsState()
     val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+
     /* Chờ các sự kiện xuất hiện */
-    LaunchedEffect(key1 = true) {
-        mainViewModel.uiEvent.collect { event ->
-            when (event) {
-                /* nếu là sự kiện quay số điện thoại thực hiện chuyển màn hình đến danh mục cuộc gọi */
-                is UiEvent.Dial -> {
-                    val intent = Intent(Intent.ACTION_DIAL).apply {
-                        data = Uri.parse("tel:${event.phoneNumber}")
+    LaunchedEffect(lifecycleOwner) {
+        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
+            mainViewModel.uiEvent.collect { event ->
+                when (event) {
+                    /* nếu là sự kiện quay số điện thoại thực hiện chuyển màn hình đến danh mục cuộc gọi */
+                    is UiEvent.Dial -> {
+                        val intent = Intent(Intent.ACTION_DIAL).apply {
+                            data = Uri.parse("tel:${event.phoneNumber}")
+                        }
+                        context.startActivity(intent)
                     }
-                    context.startActivity(intent)
                 }
             }
         }
