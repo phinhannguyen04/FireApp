@@ -55,6 +55,10 @@ dependencies {
     implementation(libs.androidx.media3.exoplayer.dash)
     implementation(libs.androidx.media3.exoplayer.hls)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
+
+    implementation("com.composables:icons-lucide:1.0.0")
+    implementation(libs.androidx.compose.material.icons.core)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
