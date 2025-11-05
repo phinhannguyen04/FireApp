@@ -12,8 +12,10 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.fireapp.R
 import com.example.fireapp.ui.theme.Purple40
 import com.example.fireapp.ui.theme.Purple80
 
@@ -36,13 +38,12 @@ fun Layout(
         },
         bottomBar = { AppBottomBar() }
     ) { innerPadding ->
-
-        FireAlertDialog(
+        FireVideoDialog(
             show = showDialog,
             onDismiss = onDismissDialog,
-            onFabClick= onFabClick
+            onCall = onFabClick,
+            videoUrl = stringResource(R.string.api_video_test)
         )
-
         content(innerPadding)
     }
 }

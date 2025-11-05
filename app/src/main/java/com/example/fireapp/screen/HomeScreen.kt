@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -78,7 +79,7 @@ fun HomeSreen(
                     .align(Alignment.TopStart)
                     .padding(8.dp)
             )
-//            Button(onClick = {mainViewModel.onShowDialog()}) { Text("Turn on Dialog") }
+            Button(onClick = {mainViewModel.onShowDialog()}) { Text("Turn on Dialog") }
         }
 
     }
