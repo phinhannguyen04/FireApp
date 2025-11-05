@@ -5,7 +5,6 @@ import android.net.Uri
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -20,13 +19,13 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.fireapp.R
 import com.example.fireapp.components.Layout
 import com.example.fireapp.components.VideoStreamPlayer
 import com.example.fireapp.data.UiEvent
 import com.example.fireapp.ui.theme.Purple40
 import com.example.fireapp.viewModel.MainViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Preview
 @Composable
@@ -79,7 +78,7 @@ fun HomeSreen(
                     .align(Alignment.TopStart)
                     .padding(8.dp)
             )
-            Button(onClick = {mainViewModel.onShowDialog()}) { Text("Turn on Dialog") }
+//            Button(onClick = {mainViewModel.onShowDialog()}) { Text("Turn on Dialog") }
         }
 
     }

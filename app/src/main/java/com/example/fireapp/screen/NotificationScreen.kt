@@ -54,7 +54,7 @@ fun NotificationScreen(
                     iconColor = Color.Red,
                     confidence = "95%",
                     detectionType = "Lửa",
-                    fullDateTime = "12:30 20/10/2024"
+                    fullDateTime = "20/10/2024"
                 )
             }
         }
