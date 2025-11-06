@@ -21,16 +21,20 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.example.fireapp.R
 import com.example.fireapp.components.Layout
+import com.example.fireapp.components.VideoPlayerPlaceholder
 import com.example.fireapp.components.VideoStreamPlayer
 import com.example.fireapp.data.UiEvent
+import com.example.fireapp.data.UiState
 import com.example.fireapp.ui.theme.Purple40
 import com.example.fireapp.viewModel.MainViewModel
 
-@Preview
+
 @Composable
-fun HomeSreen(
+fun HomeScreen(
+    navController: NavHostController,
     mainViewModel: MainViewModel = viewModel()
 ) {
     val dialogState by mainViewModel.dialogState.collectAsState()
@@ -53,10 +57,28 @@ fun HomeSreen(
             }
         }
     }
+
+    HomeScreenContent(
+        dialogState = dialogState,
+        onShowDialog = { mainViewModel.onShowDialog() },
+        onDismissDialog = { mainViewModel.onDismissDialog() },
+        onFabClick = { mainViewModel.onFabClick() },
+        isRealPlayer = true // Dùng Video Player thật
+    )
+}
+
+@Composable
+fun HomeScreenContent(
+    dialogState: UiState,
+    onShowDialog: () -> Unit,
+    onDismissDialog: () -> Unit,
+    onFabClick: () -> Unit,
+    isRealPlayer: Boolean // Biến để quyết định dùng player thật hay giả
+) {
     Layout (
         showDialog = dialogState.showDialog,
-        onFabClick = { mainViewModel.onFabClick() },
-        onDismissDialog = { mainViewModel.onDismissDialog() }
+        onFabClick = onFabClick,
+        onDismissDialog = onDismissDialog
     ) { innerPadding ->
 
         Box(
@@ -64,14 +86,21 @@ fun HomeSreen(
                 .padding(innerPadding)
                 .fillMaxSize(),
         ) {
-            // ---- Đặt VideoStreamPlayer vào đây ----
-            val streamUrl = stringResource(R.string.stream_url) // THAY THẾ BẰNG URL THỰC TẾ
-            VideoStreamPlayer(
-                modifier = Modifier.fillMaxSize(),
-                videoUrl = streamUrl
-            )
+            val streamUrl = stringResource(R.string.stream_url)
 
-            // Bạn có thể đặt các thông tin khác đè lên trên video
+            // <<< 2. DÙNG BIẾN ĐỂ CHỌN PLAYER
+            if (isRealPlayer) {
+                // Dùng trong ứng dụng thật
+                VideoStreamPlayer(
+                    modifier = Modifier.fillMaxSize(),
+                    videoUrl = streamUrl
+                )
+            } else {
+                // Dùng trong Preview
+                VideoPlayerPlaceholder(modifier = Modifier.fillMaxSize())
+            }
+
+
             Text(
                 "Trực tiếp từ Camera 1",
                 color = Purple40,
@@ -79,16 +108,22 @@ fun HomeSreen(
                     .align(Alignment.TopStart)
                     .padding(8.dp)
             )
-            Button(onClick = {mainViewModel.onShowDialog()}) { Text("Turn on Dialog") }
+            Button(onClick = onShowDialog) { Text("Turn on Dialog") }
         }
-
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
-fun HowScreenReview() {
-    HomeSreen()
+fun HomeScreenPreview() {
+    // 3. Cung cấp các giá trị giả cho Preview
+    HomeScreenContent(
+        dialogState = UiState(showDialog = false),
+        onShowDialog = {},
+        onDismissDialog = {},
+        onFabClick = {},
+        isRealPlayer = false // <<< Dùng Video Player giả
+    )
 }
 
 

@@ -58,6 +58,7 @@ dependencies {
 
     implementation("com.composables:icons-lucide:1.0.0")
     implementation(libs.androidx.compose.material.icons.core)
+    implementation(libs.androidx.navigation.compose)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

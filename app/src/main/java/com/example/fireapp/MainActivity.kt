@@ -4,15 +4,16 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
+import com.example.fireapp.components.AppBottomBar
+import com.example.fireapp.navigation.AppNavigation
 import com.example.fireapp.ui.theme.FireAppTheme
-import com.example.firedetection.ui.screens.HomeSreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,8 +21,16 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             FireAppTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    HomeSreen()
+                val navController = rememberNavController()
+                Scaffold (
+                    bottomBar = {
+                        AppBottomBar(navController = navController)
+                    }
+                ) {innerPadding ->
+                    AppNavigation(
+                        navController = navController,
+                        modifier = Modifier.padding(innerPadding)
+                    )
                 }
             }
         }
