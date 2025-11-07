@@ -1,11 +1,11 @@
-package com.example.firedetection.ui.screens
+package com.example.fireapp.screens // <<< 1. SỬA LẠI PACKAGE
 
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -23,9 +23,9 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.fireapp.R
+import com.example.fireapp.components.IpWebcamStream
 import com.example.fireapp.components.Layout
 import com.example.fireapp.components.VideoPlayerPlaceholder
-import com.example.fireapp.components.VideoStreamPlayer
 import com.example.fireapp.data.UiEvent
 import com.example.fireapp.data.UiState
 import com.example.fireapp.ui.theme.Purple40
@@ -37,7 +37,8 @@ fun HomeScreen(
     navController: NavHostController,
     mainViewModel: MainViewModel = viewModel()
 ) {
-    val dialogState by mainViewModel.dialogState.collectAsState()
+    // ViewModel giờ đây quản lý một UiState chung
+    val uiState by mainViewModel.uiState.collectAsState()
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
 
@@ -46,7 +47,6 @@ fun HomeScreen(
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
             mainViewModel.uiEvent.collect { event ->
                 when (event) {
-                    /* nếu là sự kiện quay số điện thoại thực hiện chuyển màn hình đến danh mục cuộc gọi */
                     is UiEvent.Dial -> {
                         val intent = Intent(Intent.ACTION_DIAL).apply {
                             data = Uri.parse("tel:${event.phoneNumber}")
@@ -59,24 +59,24 @@ fun HomeScreen(
     }
 
     HomeScreenContent(
-        dialogState = dialogState,
+        uiState = uiState, // <<< Truyền xuống UiState
         onShowDialog = { mainViewModel.onShowDialog() },
         onDismissDialog = { mainViewModel.onDismissDialog() },
         onFabClick = { mainViewModel.onFabClick() },
-        isRealPlayer = true // Dùng Video Player thật
+        isRealPlayer = true
     )
 }
 
 @Composable
 fun HomeScreenContent(
-    dialogState: UiState,
+    uiState: UiState, // <<< 2. SỬA LẠI THAM SỐ THÀNH UiState
     onShowDialog: () -> Unit,
     onDismissDialog: () -> Unit,
     onFabClick: () -> Unit,
-    isRealPlayer: Boolean // Biến để quyết định dùng player thật hay giả
+    isRealPlayer: Boolean
 ) {
     Layout (
-        showDialog = dialogState.showDialog,
+        showDialog = uiState.showDialog, // Đọc từ UiState
         onFabClick = onFabClick,
         onDismissDialog = onDismissDialog
     ) { innerPadding ->
@@ -85,30 +85,38 @@ fun HomeScreenContent(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize(),
+            contentAlignment = Alignment.Center
         ) {
-            val streamUrl = stringResource(R.string.stream_url)
+            // Lấy đường dẫn IP stream từ strings.xml
+            val streamUrl = stringResource(R.string.local_stream_ip)
 
-            // <<< 2. DÙNG BIẾN ĐỂ CHỌN PLAYER
             if (isRealPlayer) {
-                // Dùng trong ứng dụng thật
-                VideoStreamPlayer(
-                    modifier = Modifier.fillMaxSize(),
-                    videoUrl = streamUrl
+                // SỬ DỤNG COMPOSABLE MỚI CỦA BẠN
+                IpWebcamStream(
+                    videoUrl = "http://" +streamUrl + "/browserfs.html",
+                    modifier = Modifier.wrapContentSize()
                 )
             } else {
-                // Dùng trong Preview
+                // Chỉ dùng trong Preview để không bị crash
                 VideoPlayerPlaceholder(modifier = Modifier.fillMaxSize())
             }
 
-
             Text(
-                "Trực tiếp từ Camera 1",
+                "Trực tiếp từ Camera IP " + streamUrl,
                 color = Purple40,
                 modifier = Modifier
                     .align(Alignment.TopStart)
                     .padding(8.dp)
             )
-            Button(onClick = onShowDialog) { Text("Turn on Dialog") }
+
+            Text(
+                "Trực tiếp từ Camera IP",
+                color = Purple40,
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(8.dp)
+            )
+            // Button(onClick = onShowDialog) { Text("Turn on Dialog") }
         }
     }
 }
@@ -116,18 +124,11 @@ fun HomeScreenContent(
 @Preview(showBackground = true)
 @Composable
 fun HomeScreenPreview() {
-    // 3. Cung cấp các giá trị giả cho Preview
     HomeScreenContent(
-        dialogState = UiState(showDialog = false),
+        uiState = UiState(showDialog = false),
         onShowDialog = {},
         onDismissDialog = {},
         onFabClick = {},
-        isRealPlayer = false // <<< Dùng Video Player giả
+        isRealPlayer = false
     )
 }
-
-
-
-
-
-

@@ -24,7 +24,6 @@ fun AppBottomBar(
     val currentRoute = navBackStackEntry?.destination?.route
 
     NavigationBar (){
-
         NavigationBarItem(
             selected = currentRoute == Route.HomeScreen.path,
             onClick = {

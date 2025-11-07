@@ -5,8 +5,9 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.fireapp.screens.HomeScreen
 import com.example.fireapp.screens.NotificationScreen
-import com.example.firedetection.ui.screens.HomeScreen
+
 
 
 @Composable

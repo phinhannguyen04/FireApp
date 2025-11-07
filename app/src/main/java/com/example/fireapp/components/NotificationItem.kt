@@ -21,21 +21,22 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.composables.icons.lucide.Dot
 import com.composables.icons.lucide.Flame
 import com.composables.icons.lucide.Lucide
+import com.example.fireapp.data.Notification
 import com.example.fireapp.ui.theme.Carol
+import com.example.fireapp.utils.rememberFormattedTimestamp
 
 @Composable
 fun NotificationItem(
     cameraName: String = "Camera 1",
-    relativeTime: String,
     icon: ImageVector,
     iconColor: Color,
-    confidence: String,
-    detectionType: String,
-    fullDateTime: String
+    notification: Notification
 ) {
+    /* Chuyen doi kieu du lieu phut, gio, ngay, thang, nam */
+    val relativeTime = rememberFormattedTimestamp(timestamp = notification.timestamp)
+
     Row (Modifier
         .fillMaxWidth()
     ) {
@@ -63,15 +64,6 @@ fun NotificationItem(
                     // Sử dụng tham số
                     Text(cameraName, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
                     Row (horizontalArrangement = Arrangement.Center) {
-                        Text(fullDateTime, fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
-                        Icon(
-                            imageVector = Lucide.Dot,
-                            contentDescription = "Dot Icon",
-                            modifier = Modifier
-                                .padding(horizontal = 2.dp)
-                                .size(16.dp),
-                            tint = Color.Gray
-                        )
                         Text(relativeTime, fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
                     }
                 }
@@ -85,7 +77,7 @@ fun NotificationItem(
                     Icon(
                         // Sử dụng tham số
                         imageVector = icon,
-                        contentDescription = "$detectionType Icon",
+                        contentDescription = null,
                         modifier = Modifier.size(72.dp),
                         tint = iconColor
                     )
@@ -97,7 +89,7 @@ fun NotificationItem(
                     ) {
                         Text(
                             // Sử dụng tham số
-                            text = confidence,
+                            text = notification.confidence_avg.toString(),
                             fontSize = 36.sp,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier
@@ -105,7 +97,7 @@ fun NotificationItem(
                         )
                         Text(
                             // Sử dụng tham số
-                            detectionType,
+                            notification.detected_objects.joinToString(", "),
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier
@@ -126,11 +118,20 @@ fun NotificationItem(
 fun NotificationItemPreview() {
     NotificationItem(
         cameraName = "Camera 1",
-        relativeTime = "5 phút trước",
         icon = Lucide.Flame,
         iconColor = Color.Red,
-        confidence = "95%",
-        detectionType = "Lửa",
-        fullDateTime = "20/10/2024"
+
+        notification = Notification(
+            id = "1",
+            timestamp = "20/10/2025 14:30",
+            detected_objects = listOf("Lửa", "Khói"),
+            confidence_avg = 0.95,
+            video_path = "https://example.com/video.mp4",
+            subject = "ff",
+            snapshot_path ="ss",
+            receiver = "rr",
+            status = "new"
+        )
     )
 }
+
